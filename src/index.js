@@ -18,11 +18,19 @@ app.get("/products", (req, res) => {
   });
 });
 app.get("/products/:id", (req, res) => {
-  const id = Number(req.params.id);
+  try {
+    const id = Number(req.params.id);
   const product = products.find((product) => product.id === id);
+  
+  if(!product ) {
+   return res.status(400).send({message: `product was not found with this id: ${id}`});
+  }
   res.send({
     product: product,
   });
+  } catch (error) {
+    res.status(500).send({message: error.message});
+  }
 });
 app.listen(port, () => {
   console.log(`server is running at ${port}`);
